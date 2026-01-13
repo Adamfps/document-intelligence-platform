@@ -1,75 +1,82 @@
-# Document Verify MVP
+# AI-Powered Document Intelligence Platform
 
-Document Verify MVP is a lightweight, end-to-end demo that extracts structured data from ID images using OCR + LLM, then classifies and scores plausibility with explainable signals. It is designed for capstone/demo use, not legal authentication.
+A document intelligence platform that extracts, classifies, and performs explainable plausibility checks on Indian identity documents using OCR and Large Language Models.
 
-## Features
+This project focuses on **document understanding**, not just text extraction.  
+It demonstrates how manual document verification workflows can be augmented with AI in a safe, auditable, and explainable way.
 
-- Image upload (JPG/PNG)
-- OCR text extraction (EasyOCR, English)
-- Structured field extraction (Groq LLM)
-- QR presence detection (visual only, no decoding)
-- Classification (Aadhaar-like vs PAN-like vs Unknown)
-- Plausibility scoring with reason codes
-- SQLite persistence and audit trail
-- JSON download of extracted payload
+> ⚠️ This system performs **plausibility checks only** and is **not a legal authentication system**.
 
-## Architecture (High-Level)
+---
 
-```
+## ✨ What This Platform Does
+
+- Accepts ID images (JPG / PNG)
+- Extracts raw text using OCR
+- Converts unstructured text into structured fields using an LLM
+- Detects QR **presence** (no decoding)
+- Classifies document type:
+  - Aadhaar-like
+  - PAN-like
+  - Unknown
+- Runs explainable plausibility checks with reason codes
+- Stores results in SQLite for auditability
+- Exports structured output as JSON
+
+---
+
+## 🧠 Why This Is Different From OCR Demos
+
+Most OCR tools stop at text extraction.
+
+This platform goes further by:
+- Understanding **what document** is being submitted
+- Explaining **why** a document looks valid or suspicious
+- Returning structured, auditable outputs instead of raw text
+- Respecting real-world constraints (e.g. no unauthorized QR decoding)
+
+---
+
+## 🏗 High-Level Architecture
+
 User Upload
-    |
-    v
+|
+v
 Streamlit UI (app.py)
-    |
-    v
-OCR (ocr_processor.py) ---> Raw Text
-    |
-    v
-QR Presence (qr_detector.py)
-    |
-    v
-LLM Extract (llm_extractor.py) ---> Structured Fields
-    |
-    v
-Classify + Validate (verification_engine.py)
-    |
-    v
-SQLite (database.py) ---> Audit Logs + Payload
-```
+|
+v
+OCR (EasyOCR)
+|
+v
+QR Presence Detection (visual only)
+|
+v
+LLM-Based Field Extraction
+|
+v
+Document Classification + Plausibility Checks
+|
+v
+SQLite Storage + JSON Output
 
-## Local Setup
 
-### Prerequisites
+---
 
-- Python 3.8+
-- Groq API key
+## 🧪 How It Works (End-to-End Flow)
 
-### Install
+1. User uploads an ID image
+2. OCR extracts raw text from the image
+3. QR presence is detected (not decoded)
+4. LLM extracts structured fields (name, DOB, ID numbers, etc.)
+5. Verification engine:
+   - Classifies document type
+   - Runs plausibility checks
+6. Results are displayed and stored
+7. Output can be downloaded as JSON
 
-```bash
-pip install -r requirements.txt
-```
+---
 
-Copy `.env.example` to `.env` in `doc-verify-mvp/`:
-
-```bash
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-Run the app:
-
-```bash
-streamlit run app.py
-```
-
-## Usage
-
-1. Upload a sample ID image (JPG/PNG).
-2. Click "Process Document".
-3. View OCR text, classification, plausibility verdict, and extracted fields.
-4. Download results as JSON.
-
-## Extracted Fields
+## 📂 Extracted Fields
 
 - `name`
 - `date_of_birth`
@@ -80,35 +87,42 @@ streamlit run app.py
 - `gender`
 - `father_name`
 
-## Limitations
+Fields not found are returned as `null`.
 
-- Plausibility checks only; not legal authentication.
-- No QR decoding or cryptographic verification.
-- Heuristic classification based on keywords/regex.
-- English-only OCR; no PDFs or multi-language support.
-- Accuracy depends on image quality.
+---
 
-## Project Structure
+## ⚖️ Why QR Codes Are Not Decoded
 
-```
-doc-verify-mvp/
-├── app.py                 # Streamlit UI + pipeline controller
-├── database.py            # SQLite schema & CRUD
-├── ocr_processor.py       # OCR logic
-├── llm_extractor.py       # Groq LLM extraction
-├── verification_engine.py # Classification + plausibility rules
-├── qr_detector.py         # QR presence detection
-├── requirements.txt       # Python dependencies
-├── .env                   # API keys (not committed)
-├── .gitignore
-├── uploads/               # saved images
-└── verification.db        # SQLite database
-```
+This platform **intentionally does not decode Aadhaar QR codes**.
 
-## Demo Data
+Reason:
+- Aadhaar QR verification requires UIDAI-issued cryptographic public keys
+- Decoding QR payloads without official authorization would be insecure and misleading
 
-Generate sample Aadhaar-like and PAN-like images:
+Instead, the system:
+- Detects QR **presence**
+- Treats QR verification as an **external authority responsibility**
+
+This reflects real-world, governance-grade system boundaries.
+
+---
+
+## 🚀 Local Setup
+
+### Prerequisites
+- Python 3.8+
+- Groq API key
+
+### Installation
 
 ```bash
-python generate_test_ids.py
-```
+pip install -r requirements.txt
+
+Create a .env file:
+
+GROQ_API_KEY=your_groq_api_key_here
+
+
+Run the app:
+
+streamlit run app.py
