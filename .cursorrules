@@ -1,0 +1,31 @@
+# Cursor Rules for Document Verification MVP
+
+## Code Style
+- Use clear, descriptive variable names
+- Add docstrings to all functions and classes
+- Follow PEP 8 style guidelines
+- Use type hints where appropriate
+
+## Error Handling
+- Always use try-except blocks for error handling
+- Log errors appropriately using the logging module
+- Fail gracefully without crashing the application
+- Provide user-friendly error messages in the UI
+
+## Scope Management
+- Do not add features outside the MVP scope
+- Keep the codebase minimal and focused
+- Avoid premature optimization or abstraction
+- Stick to the defined user flow and architecture
+
+## Code Quality
+- Prefer simplicity over complex abstractions
+- Write self-documenting code
+- Keep functions focused on a single responsibility
+- Use meaningful comments only when necessary
+
+## Testing Considerations
+- Code should be testable but no tests required for MVP
+- Handle edge cases gracefully
+- Validate inputs where necessary
+
